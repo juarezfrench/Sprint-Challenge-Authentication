@@ -5,6 +5,7 @@ module.exports = {
   find,
   findBy,
   findById,
+
 };
 
 function find() {
@@ -26,3 +27,4 @@ function findById(id) {
     .where({ id })
     .first();
 }
+

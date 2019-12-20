@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken"); // installed this
+const restricted = require("./authenticate-middleware");
 
 const Users = require("../users/users-model.js");
 
@@ -43,11 +44,19 @@ router.post("/login", (req, res) => {
     });
 });
 
+router.get("/users", restricted, (req, res) => {
+  Users.find()
+    .then(users => {
+      res.json(users);
+    })
+    .catch(err => res.send(err));
+});
+
 // this functions creates and signs the token
 function signToken(user) {
   const payload = {
     username: user.username,
-    role: "student", // this will come from the database users.role
+    // role: "student", // this will come from the database users.role
   };
 
   const secret = process.env.JWT_SECRET || "is it secret, is it safe?";
@@ -58,5 +67,7 @@ function signToken(user) {
 
   return jwt.sign(payload, secret, options); // notice the return
 }
+
+
 
 module.exports = router;
